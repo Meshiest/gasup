@@ -610,7 +610,7 @@ function generateTerrain() {
           size: fuzz(0.07, 0.02),
         });
         yield {
-          gas: Math.random() < 0.01,
+          gas: Math.random() < 0.013,
           left: {x: leftSpline(j/nPoints), ...common(180)},
           right: {x: rightSpline(j/nPoints), ...common(0)}
         }
