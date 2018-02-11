@@ -78,12 +78,14 @@ function lerpColor(a, b, t) {
 
 // Scales a number based on the width or height of the display
 function scale(s) {
-  return s*Math.min(document.body.clientWidth, document.body.clientHeight);
+  return s*900;
+  // return s*Math.min(document.body.clientWidth, document.body.clientHeight);
 }
 
 // Removes the width/height scale from a number
 function unscale(s) {
-  return s/Math.min(document.body.clientWidth, document.body.clientHeight);
+  return s/900;
+  // return s/Math.min(document.body.clientWidth, document.body.clientHeight);
 }
 
 // Calculates a svg path for any line around a circle
@@ -419,7 +421,7 @@ const MAX_SPEED = 500;
 const THROTTLE_SPEED = 25;
 
 // Range in which a gatling turret can see a player
-const GAT_TURRET_RANGE = Math.min(scale(1));
+const GAT_TURRET_RANGE = Math.min(document.body.clientHeight, document.body.clientWidth);
 const ANTIAIR_TURRET_RANGE = GAT_TURRET_RANGE;
 
 // Plane transform
@@ -824,7 +826,7 @@ async function main() {
     setPlanePosition(planePos.x, planePos.y, deg(planePos.angle));
 
     // Render the terrain chunk at a time
-    if (2-unscale(planePos.y) > highestTerrainElement) {
+    if (unscale(2*height-planePos.y) > highestTerrainElement) {
       groupNum++;
       function makeVertex({x, y}) {
         return `${scale(x)},${scale(1-y)}`;
