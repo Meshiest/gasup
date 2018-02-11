@@ -64,6 +64,14 @@ function gray(shade) {
   return `rgb(${shade},${shade},${shade})`;
 }
 
+// List of color ranges for lerping as altitude increases [inside, outside]
+let colorRanges = [
+  ['#323232', '#555555'],
+  ['#364856', '#547b99'],
+  ['#114b77', '#1c76bc'],
+  ['#0a525b', '#0d7482'],
+];
+
 // Smoothly interpolates between colors a and b as a function of t
 function lerpColor(a, b, t) { 
   let aHex = parseInt(a.replace(/#/g, ''), 16),
@@ -197,11 +205,10 @@ function createGatlingBullet(x, y, angle) {
       let playerDist = Math.hypot(projY - planePos.y, projX - planePos.x); // let
       playerTheta = Math.atan2(y - planePos.y, x - planePos.x);
 
-      // TODO: hit detection ;)
-
-      // Shitty hit detection
+      // Mediocre hit detection
       if(dist > maxDist || playerDist < 30) {
         if(playerDist < 30) {
+          gasAmount -= 0.05;
           screenRumble = Math.min(screenRumble + 0.15, 0.6);
         }
         particle(projX, projY, 10, '#ffff00', 1,
@@ -296,12 +303,14 @@ function createAntiAirRocket(x, y, angle) {
           });
       }
 
-      // TODO: hit detection ;)
-
+      
       // Kill projectile after max dist or when near player
+      // Mediocre hit detection
       if(dist > 40 || playerDist < 50) {
-        if(playerDist < 400) 
+        if(playerDist < 400) {
           screenRumble = 0.4;
+          gasAmount -= clamp(1 - playerDist / 400, 0.2, 0.005);
+        }
         particle(
           x,
           y,
@@ -353,7 +362,7 @@ function createGatlingGun(x, y, direction) {
         // Calculate angle between turret and player
 
         // Clamp angle
-        angle = Math.max(-Math.PI/6, Math.min(Math.PI/6, angle));
+        angle = clamp(angle, -Math.PI/6, Math.PI/6);
 
         // Rotate the turret to point at the player
         lastShot -= deltaTime;
@@ -377,6 +386,29 @@ function createGatlingGun(x, y, direction) {
     }
   };
   return gun;
+}
+
+/* Creates a gas can object at a given position*/
+function createGasCan(x, y) {
+  let sprite = useSprite('#gas-can');
+  
+  $('#elems').appendChild(sprite);
+  sprite.setAttribute('transform', `translate(${x} ${y})`);
+  
+  let can = {
+    svg: sprite,
+    x, y,
+    tick(deltaTime) {
+      let playerDist = Math.hypot(y - planePos.y, x - planePos.x);
+      if(playerDist < 50) {
+        gasAmount = 1;
+        return true;
+      }
+
+      sprite.setAttribute('transform', `translate(${x} ${y}) rotate(${Math.sin(performance.now() * 0.03) * 5})`);
+    }
+  };
+  return can;
 }
 
 
@@ -427,7 +459,7 @@ const ANTIAIR_TURRET_RANGE = GAT_TURRET_RANGE;
 
 // Plane transform
 let planePos = {angle: Math.PI/2, x: 450, y: 0, vx: 0, vy: -200};
-
+let gasAmount = 1;
 
 /* Rotate the gas gauge an `amount` from 0 to 1*/
 function setGas(amount) {
@@ -548,8 +580,13 @@ function generateTerrain() {
           let r = Math.random();
           return r < 0.02 ? {rocket: true} : r < 0.04 ? {gatling: true} : {};
         };
-        const common = rot => ({y, rot: fuzz(rot + 45, 45), size: gauss(0.07, 0.02), ...guns()});
+        const common = rot => ({
+          y, ...guns(),
+          rot: fuzz(rot + 45, 45),
+          size: gauss(0.07, 0.02),
+        });
         yield {
+          gas: Math.random() < 0.007,
           left: {x: leftSpline(i/nPoints), ...common(180)},
           right: {x: rightSpline(i/nPoints), ...common(0)}
         }
@@ -617,7 +654,6 @@ async function main() {
   );
 
   // Guages
-  let gasAmount = 1;
   let gasRenderAmount = 1;
   let gasInertia = 0;
   let rpmRenderAmount = 0;
@@ -763,7 +799,13 @@ async function main() {
     // Rotate plane prop based on throttle
     $('#plane-prop').setAttribute('ry', Math.sin(frameTime * (0.02 + 0.8 * throttle)) * 60 + 60);
 
-    gasAmount -= deltaTime * throttle * 0.03;
+    if(gasAmount <= 0) {
+      throttle = 0;
+      gasAmount = 0;
+    }
+
+    gasAmount -= deltaTime * throttle * 0.01;
+
     // Increase gas particle rate when throttling
     gasParticle -= deltaTime * throttle + deltaTime;
 
@@ -772,28 +814,28 @@ async function main() {
       gasParticle = 0.2;
       const gasAngle = planePos.angle + Math.PI / 5 + Math.random() * 0.2 - 0.1;
       const gasSize = Math.random() * 20 + 10;
-      const gasSpeed = throttle + 1;
+      const needGas = gasAmount < 0.1;
+      const gasSpeed = throttle + 1 + needGas ? -0.5 : 0;
+      if(needGas)
+        gasParticle -= 0.1;
       particle(
         planePos.x + Math.cos(gasAngle) * 15,
         planePos.y + Math.sin(gasAngle) * 15,
-        gasSize, '#ccc', 0.7, function(t, dt) {
+        gasSize, needGas ? '#f00' : '#ccc', needGas ? 1 : 0.7, function(t, dt) {
           let size = t * 0.6 * gasSize + gasSize * 0.4;
           this.x += Math.cos(gasAngle) * dt * 80 * gasSpeed;
           this.y += Math.sin(gasAngle) * dt * 80 * gasSpeed;
           return {
-            opacity: t * 0.3 + 0.1,
+            opacity: needGas ? t * 0.5 + 0.5 : t * 0.3 + 0.1,
             width: size,
             height: size,
-            transform: `rotate(${t * Math.PI * 20} ${this.x} ${this.y})`,
+            fill: needGas ? lerpColor('#000000', '#cc6600', t) : '#ccc',
+            transform: `rotate(${t * Math.PI * 20 * (needGas ? 10 : 1)} ${this.x} ${this.y})`,
             x: this.x - size/2,
             y: this.y - size/2,
           }
         });
     }
-
-    // TODO: remove debug refill gas
-    if(gasAmount < 0)
-      gasAmount = 1;
 
     let accelDir = {
       x: Math.cos(planePos.angle + Math.PI) * THROTTLE_SPEED * throttle,
@@ -886,18 +928,25 @@ async function main() {
           ]
       )));
       
+      terrain[groupNum].map(({left, right, gas}) => {
+        if(gas) {
+          let side = Math.random() * 0.7 + 0.3;
+          gameObjects.push(createGasCan(scale(left.x * side + right.x * (1-side)), scale(1-left.y)));
+        }
+      });
+
       terrain[groupNum].map(x=>x.left).filter(x=>x.rocket).map(({x,y,size})=>{
-        gameObjects.push(createAntiAir(scale(x-size/2), scale(1-y-size/2), 180));
+        gameObjects.push(createAntiAir(scale(x-size/2), scale(1-y-size/2), true));
       });
       terrain[groupNum].map(x=>x.right).filter(x=>x.rocket).map(({x,y,size})=>{
-        gameObjects.push(createAntiAir(scale(x+size/2), scale(1-y-size/2), 0));
+        gameObjects.push(createAntiAir(scale(x+size/2), scale(1-y-size/2), false));
       });
 
       terrain[groupNum].map(x=>x.left).filter(x=>x.gatling).map(({x,y,size})=>{
-        gameObjects.push(createGatlingGun(scale(x-size/2), scale(1-y-size/2), 180));
+        gameObjects.push(createGatlingGun(scale(x-size/2), scale(1-y-size/2), true));
       })
       terrain[groupNum].map(x=>x.right).filter(x=>x.gatling).map(({x,y,size})=>{
-        gameObjects.push(createGatlingGun(scale(x+size/2), scale(1-y-size/2), 0));
+        gameObjects.push(createGatlingGun(scale(x+size/2), scale(1-y-size/2), false));
       });
 
       $('#bg').appendChild(lowerPoly);
@@ -931,6 +980,7 @@ async function main() {
       planePos.x = 0;
       planePos.vx = 0;
       planePos.vy = 0;
+      gasAmount = 0;
     }
 
     altGlow -= altGlow * deltaTime * 5;
