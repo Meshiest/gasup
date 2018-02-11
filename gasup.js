@@ -642,7 +642,8 @@ window.addEventListener('keyup', e => {
 
 // Touch event handling
 const touch = {down: false, pos: {x: 0, y: 0}};
-function handleTouch({touches}) {
+function handleTouch(e) {
+  let touches = Array.from(e.touches);
   if (touch.down = !!touches.length) {
     touch.pos.x = touches.map(x=>x.clientX).reduce((x,y)=>x+y)/touches.length;
     touch.pos.y = touches.map(x=>x.clientY).reduce((x,y)=>x+y)/touches.length;
