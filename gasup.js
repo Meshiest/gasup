@@ -574,8 +574,8 @@ async function main() {
   const touch = {down: false, pos: {x: 0, y: 0}};
   function handleTouch({touches}) {
     if (touch.down = !!touches.length) {
-      pos.x = touches.map(x=>x.clientX).reduce((x,y)=>x+y)/touches.length;
-      pos.y = touches.map(x=>x.clientY).reduce((x,y)=>x+y)/touches.length;
+      touch.pos.x = touches.map(x=>x.clientX).reduce((x,y)=>x+y)/touches.length;
+      touch.pos.y = touches.map(x=>x.clientY).reduce((x,y)=>x+y)/touches.length;
     }
   }
   ['start', 'end', 'move'].map(x=>document.body.addEventListener('touch'+x, handleTouch, false));
