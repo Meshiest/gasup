@@ -225,7 +225,7 @@
       </text>
     </svg>
 
-    <svg class="hud-elem hud-title" xmlns="http://www.w3.org/2000/svg">
+    <svg class="hud-elem hud-menu" xmlns="http://www.w3.org/2000/svg">
       <text
         id="title-text"
         font-weight="normal"
@@ -237,8 +237,19 @@
         Gas Up!
       </text>
     </svg>
-    <div class="hud-elem hud-title loading-screen">
+    <div class="hud-elem hud-menu loading-screen">
       <span class="load-text">Loading <span class="load-title">Gas Up!</span></span>
+    </div>
+
+    <div class="hud-elem hud-menu menu" id="gameover-screen" style="display: none;">
+      <h3><i>Gasp!</i> You Crashed!</h3>
+      <section>
+        <div>Max Altitude: <span class="numeric" id="maxAlt">50</span></div>
+        <div>Altitude: <span class="numeric" id="currAlt">50</span></div>
+      </section>
+      <div>
+        <button onclick="main()">Fly Again</button>
+      </div>
     </div>
 
     <script type="text/javascript" src="gasup.js"></script>
