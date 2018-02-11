@@ -701,11 +701,13 @@ function emptyElem(el) {
 let titleSequence = 2;
 
 async function main() {
+  $('#main-menu').style.display = 'none';
   $('#gameover-screen').style.display = 'none';
 
   emptyElem($('#elems'));
   emptyElem($('#fg'));
   emptyElem($('#bg'));
+  emptyElem($('#particles'));
   gameObjects.splice(0, gameObjects.length);
   particles.splice(0, particles.length);
 
@@ -1156,12 +1158,11 @@ async function main() {
     });
   }
 
-  $('#currAlt').textContent = Math.floor(-planePos.y/250);
+  $('#currAlt').textContent = Math.max(Math.floor(-planePos.y/250), 0);
   $('#maxAlt').textContent = gameMaxAlt;
   $('#gameover-screen').style.display = 'flex';
 }
 
 window.addEventListener('load', () => {
   $('.loading-screen').style.display = 'none';
-  main();
 });
