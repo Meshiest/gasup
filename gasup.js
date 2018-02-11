@@ -632,15 +632,6 @@ async function main() {
     $svgProps($('.hud-gas'), {width: '200'});
   }
 
-
-      // Move camera to player
-        let renderScale = IS_MOBILE ? 0.8 : 1;
-        $('#world').setAttribute('transform', `translate(${
-          -planePos.x * renderScale + width/2 + rumbleOffX
-        } ${
-          -planePos.y * renderScale + height/2 + rumbleOffY
-        }) scale(${renderScale})`)
-
   const initialFrameTime = await nextFrame();
 
   let frameCounter = 0;
@@ -871,12 +862,13 @@ async function main() {
       rumbleOffY = (Math.random() - 0.5) * screenRumble * 50;
     }
 
-    // Move world to focus on plane
+    // Move camera to player
+    let renderScale = IS_MOBILE ? 0.8 : 1;
     $('#world').setAttribute('transform', `translate(${
-       -planePos.x + width/2 + rumbleOffX
+      -planePos.x * renderScale + width/2 + rumbleOffX
     } ${
-       -planePos.y + height/2 + rumbleOffY
-    })`);
+      -planePos.y * renderScale + height/2 + rumbleOffY
+    }) scale(${renderScale})`)
 
     // TODO: remove debug position resetting
     if(planePos.y > 1000) {
