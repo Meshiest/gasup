@@ -1049,7 +1049,7 @@ async function main() {
       
       terrain[groupNum].map(({left, right, gas}) => {
         if(gas) {
-          let side = Math.random() * 0.7 + 0.3;
+          let side = Math.random() * 0.4 + 0.3;
           gameObjects.push(createGasCan(scale(left.x * side + right.x * (1-side)), scale(1-left.y)));
         }
       });
