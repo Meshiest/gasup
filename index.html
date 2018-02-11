@@ -1,0 +1,250 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <title>GasUp</title>
+    <link rel="stylesheet" type="text/css" href="gasup.css" />
+  </head>
+  <body>
+    <svg class="canvas" id="canvas" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Anti Air Turret -->
+        <g id="anti-air-base">
+          <path fill="#3f7f00" stroke-width="5"
+                d="m-94.54088,-19.5308l20.5,-48.12501l20.5,48.12501l-41.00001,0l0.00001,0z"
+                transform="rotate(-70 -74.04087829589844,-43.59330749511719)"
+                stroke="#000000"/>
+          <path fill="#3f7f00" stroke-width="5"
+                d="m-78.03604,-66.62737l20.5,-48.12501l20.5,48.12501l-41,0z"
+                transform="rotate(-70 -57.536041259765604,-90.68988037109374)"
+                stroke="#000000"/>
+          <rect fill="#3f7f00" stroke-width="5" x="-51.53605" y="-95.68989"
+                width="140" height="114" stroke="#000000"
+                transform="rotate(20 18.46395874023438,-38.68988800048829)"/>
+          <path fill="#3f7f00" stroke="#000000" stroke-width="5"
+                d="m-45.11339,59.43359l17.625,-94l58.75,0l17.62499,94l-94,0l0.00001,0z"/>
+          <rect fill="#3f7f00" stroke="#000000" stroke-width="5"
+                x="-59.53605" y="41.31011" width="120" height="32"/>
+          <ellipse fill="#727272" stroke="#000000" stroke-width="5"
+                   cx="1.46395" cy="-4.68989" rx="20" ry="20"/>
+        </g>
+
+        <!-- Gatling Gun Turret -->
+        <g id="gatling-base">
+          <rect stroke="#000000" height="60" width="20" y="0" x="-10"
+                stroke-linecap="null" stroke-linejoin="null"
+                stroke-dasharray="null" stroke-width="5" fill="#3f7f00"/>
+          <rect stroke="#000000" height="20" width="100" y="50" x="-50"
+                stroke-linecap="null" stroke-linejoin="null"
+                stroke-dasharray="null" stroke-width="5" fill="#007f00"/>
+        </g>
+        <g id="gatling-gun">
+          <line fill="none" stroke="#000000" stroke-width="9"
+                x1="-178.04518" y1="-25.86056" x2="-28.29447" y2="-25.86056"/>
+          <line fill="none" stroke="#000000" stroke-width="9"
+                x1="-177.93327" y1="-14.17945" x2="-28.18256" y2="-14.17945"/>
+          <line fill="none" stroke="#000000" stroke-width="9"
+                x1="-177.93327" y1="-2.28811" x2="-28.18256" y2="-2.28811"/>
+          <path fill="#007f00" stroke="#000000" stroke-width="5"
+                d="m-53.94896,-16.00533c18.58021,-16.35059 25.26909,-27.49871 43.8493,-26.7555c18.58021,0.74321 56.48384,-7.43208 76.55047,2.97283c20.06663,10.40492 9.66171,60.19988 -32.70117,61.6863c-42.36288,1.48642 -111.48127,-3.71604 -111.48127,-11.14813c0,-7.43208 23.78267,-26.7555 23.78267,-26.7555z"/>
+          <rect fill="#007f00" stroke="#000000" stroke-width="5"
+                x="-166.91665" y="-30.8695" width="17.837" height="33.44438"/>
+          <rect fill="#ceb965" stroke="#000000" stroke-width="5"
+                x="-16.34629" y="-27.02919" width="32.19021" height="48.9124"/>
+          <rect fill="#565656" stroke="#000000" stroke-width="5"
+                x="-33.06848" y="4.32492" width="63.54432" height="22.99301"/>
+        </g>
+
+        <!-- Gas Can -->
+        <g id="gas-can">
+          <g transform="scale(0.1 0.1)">
+            <path d="m13.3437,74.34376c-6.75,9 -9.5625,12.9375 -9.5625,38.25c0,25.3125 1.6875,213.75001 1.2813,213.65624c-0.4062,-0.09377 -4.0938,31.03127 36.9687,29.90627c41.0625,-1.125 164.8125,0 182.8125,-0.5625c18,-0.5625 34.3125,-10.6875 34.875,-25.875c0.5625,-15.1875 0,-298.68751 -0.4062,-298.78127c-0.4062,-0.09376 1.5312,-23.53124 -35.0313,-25.21874c-36.5625,-1.6875 -104.625,-1.6875 -105.0312,-1.78126c-0.4062,-0.09376 -19.8438,-3.28124 -24.9063,10.21876c-5.0625,13.5 -14.625,33.75 -25.875,35.4375c-11.25,1.6875 -55.125,24.75 -55.125,24.75z"
+                  stroke-width="20" stroke="#000000" fill="#FF0000"/>
+            <rect transform="rotate(-22.2490234375 36.96869659423827,47.9062614440918)"
+                  height="21.375" width="51.75" y="37.21876" x="11.0937"
+                  stroke-width="20" stroke="#000000" fill="#000000"/>
+            <text stroke="#e50000" transform="matrix(18.149628670219638,0,0,18.149628670219638,-2271.8906292530355,-2665.461027044309)"
+                  font-weight="normal" xml:space="preserve" text-anchor="middle"
+                  font-family="serif" font-size="24" y="165.14667" x="132.47926"
+                  stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null"
+                  stroke-width="0" fill="#000000">×</text>
+          </g>
+        </g>
+
+        <!-- Rocket for Anti Air -->
+        <g id="rocket">
+          <path stroke="#000000" d="m-23.564,87.30565l24.89749,-51.74589l24.89748,51.74589l-49.79497,0z"
+                stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#3f7f00"/>
+          <rect height="19.32342" width="0" y="151.50027" x="141.79992"
+                stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null"
+                stroke-width="5" stroke="#000000" fill="#3f7f00"/>
+          <rect stroke="#000000" height="73.57764" width="29.72834" y="13.2635" x="-13.53065"
+                stroke-linecap="null" stroke-linejoin="null"
+                stroke-dasharray="null" stroke-width="5" fill="#3f7f00"/>
+          <path d="m-16.6798,16.14551l17.837,-31.21476l17.837,31.21476l-35.67401,0z"
+                stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null"
+                stroke-width="5" stroke="#000000" fill="#3f7f00"/>
+          <path transform="rotate(-180 1.1311898231506348,95.01081848144531)"
+                stroke="#000000"
+                d="m-11.50336,102.44293l4.73796,-14.86418l15.79319,0l4.73795,14.86418l-25.2691,0z"
+                stroke-linecap="null" stroke-linejoin="null"
+                stroke-dasharray="null" stroke-width="5" fill="#878787"/>
+          <path stroke="#ff0000"
+                d="m-9.80642,135.44539c2.31127,-8.35951 6.47836,-15.49436 10.02341,-22.57521c4.12391,4.54404 7.68674,14.54086 10.78642,21.50342c-2.76471,8.05344 -6.74445,15.38793 -10.32968,22.61044c-3.86494,-6.60792 -7.17009,-14.15761 -10.48015,-21.53865l0,0z"
+                stroke-linecap="null" stroke-linejoin="null"
+                stroke-dasharray="null" stroke-width="5" fill="#ffff56"/>
+        </g>
+      </defs>
+      <g id="world">
+        <g id="bg" />
+        <g id="fg" />
+        <g id="elems" x="0" y="0" />
+
+        <!-- Plane svg -->
+        <g id="plane">
+          <path fill="#666666" stroke="#000000" stroke-width="11" d="m-14.57217,-55.07378c0,0 20.25,0.75 19.74998,0c-0.50002,-0.75 0.50002,-8.25 0,-9c-0.50002,-0.75 86.00002,2.25 85.5,1.5c-0.50002,-0.75 4.25002,5.25 3.75,4.5c-0.50002,-0.75 14.00002,-3 13.5,-3.75c-0.50002,-0.75 0.50002,21 0,20.25c-0.50002,-0.75 -27.24998,-9.75 -55.74998,-9c-28.5,0.75 -46.5,0.75 -47.00002,0c-0.50002,-0.75 -19.74998,-4.5 -19.74998,-4.5z" id="plane-gun"/>
+          <rect id="_1" fill="#FF0000" class="plane-body" stroke-width="11" x="-5.9515" y="-135.55779" width="10.5" height="96.61716" transform="rotate(25.697017669677734 -0.7014999389648566,-87.24922180175781) " stroke="#000000"/>
+          <rect fill="#FF0000" class="plane-body" stroke-width="11" x="35.91247" y="-132.24001" width="10.5" height="95.92933" transform="rotate(-19.272178649902344 41.16247558593754,-84.27534484863281) " stroke="#000000"/>
+          <rect fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" x="21.25" y="49.5" width="10.5" height="80.25" transform="rotate(25.697017669677734 26.500000000000046,89.62500000000001) "/>
+          <rect fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" x="-22.24998" y="42.75" width="10.5" height="80.25" transform="rotate(-12.454347610473633 -16.999984741210938,82.875) "/>
+          <path fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" d="m154.75002,61.5c121.5,-9 317.25001,-47.25 328.50001,-48.75c11.25,-1.5 42,-22.5 39,-47.25c-3,-24.75 -12.75,-40.5 -45,-45.75c-32.25,-5.25 -54.75,34.5 -42.75,53.25c12,18.75 24.75,15.75 -24,12c-48.75,-3.75 -255.75001,-28.5 -256.25003,-29.25c-0.50002,-0.75 -15.99998,18.75 -26.49998,15.75c-10.5,-3 -26.25,-6 -34.5,-17.25c-8.25,-11.25 0,3.75 -28.5,1.5c-28.5,-2.25 -105.75,-6 -114.75,-0.75c-9,5.25 -21.75,6.75 -20.25,44.25c1.5,37.5 15.75,39.75 56.25,57c40.5,17.25 168.75,5.25 168.75,5.25z" id="plane-frame"/>
+          <ellipse fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" cx="-1.99998" cy="144" rx="34.5" ry="34.5"/>
+          <ellipse fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" cx="6.25002" cy="140.25" rx="4.5"/>
+          <rect fill="#FF0000" class="plane-body" stroke-width="11" x="25.74653" y="-130.76743" width="15.79875" height="171.55567" transform="rotate(-8.41885757446289 33.645904541015575,-44.98957824707033) " stroke="#000000"/>
+          <path fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" d="m15.09369,-36.18562c48,6 102,18 101.49998,17.25c-0.50002,-0.75 -106.74998,-5.25 -116.49998,-2.25c-9.75,3 -19.5,-5.25 -7.5,-11.25c12,-6 22.5,-3.75 22.5,-3.75z" transform="rotate(6.18279504776001 51.81747436523445,-27.75045776367186) "/>
+          <path fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" d="m19.00002,30.75c48,6 102,18 101.49998,17.25c-0.50002,-0.75 -106.74998,-5.25 -116.49998,-2.25c-9.75,3 -19.5,-5.25 -7.5,-11.25c12,-6 22.5,-3.75 22.5,-3.75z" transform="rotate(6.18279504776001 55.72378540039064,39.18515014648443) "/>
+          <path fill="#FF0000" class="plane-body" stroke="#000000" stroke-width="11" d="m1.59369,-138.93562c48,6 102,18 101.49998,17.25c-0.50002,-0.75 -106.74998,-5.25 -116.49998,-2.25c-9.75,3 -19.5,-5.25 -7.5,-11.25c12,-6 22.5,-3.75 22.5,-3.75z" transform="rotate(1.8261650800704956 38.317443847654836,-130.50045776367196) "/>
+          <ellipse fill="#707070" stroke-width="0" fill-opacity="0.6" cx="-78.49998" cy="8.90622" rx="6.75" ry="121.5" stroke="#000000" id="plane-prop"/>
+          <rect fill="#707070" stroke="#000000" stroke-width="11" x="-88.2031" y="-0.79691" width="17.71875" height="17.29688"/>
+          <ellipse fill="#000000" stroke="#000000" stroke-width="11" cx="-1.82423" cy="143.58987" rx="2.21484" ry="2.21484"/>
+          <ellipse fill="#f9e107" fill-opacity="0" stroke="#000000" stroke-width="5" stroke-opacity="0" cx="-23.49998" cy="-55.75" id="plane-gunsmoke" rx="18.75" ry="18.75"/>
+        </g>
+        <g id="particles" x="0" y="0"></g>
+        <path id="shot" d="" stroke="#aaa" stroke-width="2"/>
+      </g>
+    </svg>
+
+    <svg class="hud-elem hud-gas" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="110"
+              stroke="#ffffff"
+              stroke-opacity="0.4"
+              stroke-width="5"
+              fill="none"/>
+      <circle cx="150" cy="150" r="10"
+              fill="#ffffff"
+              fill-opacity="0.4"/>
+      <text
+        font-weight="normal"
+        text-anchor="middle"
+        font-family="sans-serif"
+        font-size="16"
+        y="180"
+        x="150"
+        opacity="0.4"
+        fill="#ffffff">
+        GAS
+      </text>
+      <path d="M 150 240
+               A 90 90 0 1 1 220.921 94.590"
+            stroke="#ffffff"
+            stroke-opacity="0.4"
+            stroke-width="10"
+            stroke-dasharray="0, 9, 2, 7, 2, 7, 2, 7"
+            fill="none"/>
+      <path d="M 150 240
+               A 90 90 0 1 1 220.921 94.590"
+            stroke="#ffffff"
+            stroke-opacity="0.4"
+            stroke-width="20"
+            stroke-dasharray="2, 7, 0, 9, 0, 9, 0, 9"
+            fill="none"/>
+      <path id="gas-gauge" d=""
+            stroke="#77ff22"
+            stroke-opacity="0.6"
+            stroke-width="5"
+            fill="none"/>
+    </svg>
+
+    <svg class="hud-elem hud-rpm" width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="110"
+              stroke="#ffffff"
+              stroke-opacity="0.4"
+              stroke-width="5"
+              fill="none"/>
+      <circle cx="150" cy="150" r="10"
+              fill="#ffffff"
+              fill-opacity="0.4"/>
+      <text
+        font-weight="normal"
+        text-anchor="middle"
+        font-family="sans-serif"
+        font-size="16"
+        y="180"
+        x="150"
+        opacity="0.4"
+        fill="#ffffff">
+        SPEED
+      </text>
+      <path d="M 105 227.9422
+               A 90 90 0 1 1 195 227.9422"
+            stroke="#ffffff"
+            stroke-opacity="0.4"
+            stroke-width="10"
+            stroke-dasharray="0, 9, 2, 7, 2, 7, 2, 7"
+            fill="none"/>
+      <path d="M 105 227.9422
+               A 90 90 0 1 1 195 227.9422"
+            stroke="#ffffff"
+            stroke-opacity="0.4"
+            stroke-width="20"
+            stroke-dasharray="2, 7, 0, 9, 0, 9, 0, 9"
+            fill="none"/>
+      <path id="rpm-gauge" d=""
+            stroke="#77ff22"
+            stroke-opacity="0.6"
+            stroke-width="5"
+            fill="none"/>
+    </svg>
+
+    <svg class="hud-elem hud-alt" width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+      <text
+        font-weight="normal"
+        text-anchor="middle"
+        font-family="sans-serif"
+        font-size="20"
+        y="50"
+        x="100"
+        opacity="0.4"
+        fill="#ffffff">
+        MAX ALTITUDE
+      </text>
+      <text
+        id="alt-text"
+        font-weight="normal"
+        text-anchor="middle"
+        font-family="sans-serif"
+        font-size="30"
+        y="80"
+        x="100"
+        opacity="0.4"
+        fill="#ffffff">
+        0
+      </text>
+    </svg>
+
+    <svg class="hud-elem hud-title" xmlns="http://www.w3.org/2000/svg">
+      <text
+        id="title-text"
+        font-weight="normal"
+        text-anchor="middle"
+        font-family="Roboto Mono Light"
+        font-size="100"
+        opacity="0"
+        fill="#ffffff">
+        Gas Up!
+      </text>
+    </svg>
+
+    <script type="text/javascript" src="gasup.js"></script>
+  </body>
+</html>
