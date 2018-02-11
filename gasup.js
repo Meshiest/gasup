@@ -590,6 +590,14 @@ async function main() {
   }
   ['start', 'end', 'move'].map(x=>document.body.addEventListener('touch'+x, handleTouch, false));
 
+  // Adds each prop into whatever value is already in obj
+  function addProps(obj, props) {
+    obj = JSON.parse(JSON.stringify(obj))
+    for(prop in props)
+      obj[prop] += props[prop];
+    return obj;
+  }
+
   // Prevent touch events from being registered as clicks and reuqest full screen
   document.body.addEventListener('click', e => {e.preventDefault(); requestFullscreen();}, false);
 
@@ -838,19 +846,49 @@ async function main() {
           ...terrain[groupNum].map(x=>makeVertex(x.left)),
           ...terrain[groupNum].map(x=>makeVertex(x.right)).reverse(),
           ...(groupNum > 0 ? [makeVertex(terrain[groupNum-1][terrainGroupSize-1].right)] : [])
-        ].join(' ')
+        ].join(' '),
+        fill: gray(50),
       });
 
-      const square = ({x, y, rot, size}) => {
+      const innerDist = 0.15;
+      const innerPoly = svg('polygon', {
+        points: [
+          ...(groupNum > 0 ? [makeVertex(addProps(terrain[groupNum-1][terrainGroupSize-1].left, {x: innerDist}))] : []),
+          ...terrain[groupNum].map(x=>makeVertex(addProps(x.left, {x: innerDist}))),
+          ...terrain[groupNum].map(x=>makeVertex(addProps(x.right, {x: -innerDist}))).reverse(),
+          ...(groupNum > 0 ? [makeVertex(addProps(terrain[groupNum-1][terrainGroupSize-1].right, {x: -innerDist}))] : [])
+        ].join(' '),
+        fill: gray(0),
+      });
+
+      const square = ({x, y, rot, size}, color) => {
         const screenSize = scale(size);
         return rect(scale(x-size/2), scale(1-y-size/2),
-                    screenSize, screenSize, rot, 85, true);
+                    screenSize, screenSize, rot, color, true);
       }
 
       const upperGroup = svg('g', {}, ...[].concat(...terrain[groupNum].map(
-        ({left, right}) => [square(left), square(right)]
+        ({left, right}) => [square(left, 85), square(right, 85)]
       )));
+
+      const innerGroup = svg('g', {}, ...[].concat(...terrain[groupNum].map(
+        ({left, right}) => [
+            square(addProps(left, {
+              x: innerDist,
+              rot: fuzz(0, 20),
+              size: fuzz(0.01, 0.01),
+            }), 50),
+            square(addProps(right, {
+              x: -innerDist,
+              rot: -fuzz(0, 20),
+              size: fuzz(0.01, 0.01),
+            }), 50)
+          ]
+      )));
+
       $('#bg').appendChild(lowerPoly);
+      $('#bg').appendChild(innerPoly);
+      $('#fg').appendChild(innerGroup);
       $('#fg').appendChild(upperGroup);
       highestTerrainElement = terrain[groupNum][terrainGroupSize-1].left.y;
     }
