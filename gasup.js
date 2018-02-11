@@ -572,9 +572,10 @@ function lazyList(generator_) {
 
 // TerrainGen
 const terrainGroupSize = 20;
-function generateTerrain() {
-  const pointDeltaY = 0.5;
+const pointDeltaY = 0.5;
+const nPoints = 10;
 
+function generateTerrain() {
   const terrainPath = lazyList(function*() {
     let lastPoint = 0;
     for (let y = 0;; y += pointDeltaY)
@@ -595,8 +596,6 @@ function generateTerrain() {
       const leftSpline = smoothstep(...segments.map(({x, y, width}) => ({x: x-width/2, y})));
       const rightSpline = smoothstep(...segments.map(({x, y, width}) => ({x: x+width/2, y})));
 
-      const nPoints = 10;
-
       for (let j = 0; j < nPoints; ++j) {
         const y = points[0].y + (j/nPoints)*(points[1].y-points[0].y);
         const guns = () => {
@@ -608,7 +607,7 @@ function generateTerrain() {
         const common = rot => ({
           y, ...guns(),
           rot: fuzz(rot + 45, 45),
-          size: gauss(0.07, 0.02),
+          size: fuzz(0.07, 0.02),
         });
         yield {
           gas: Math.random() < 0.01,
@@ -618,6 +617,27 @@ function generateTerrain() {
       }
     }
   }));
+}
+
+function getTerrainForYRange(terrain, start_, end_) {
+  const indivHeight = pointDeltaY/nPoints;
+  const start = 1-unscale(start_), end = 1-unscale(end_);
+  const startBound = Math.max(Math.floor(start/indivHeight), 0);
+  const endBound = Math.ceil(end/indivHeight);
+  if (endBound < 0)
+    return [];
+  const chunkStart = Math.floor(startBound/terrainGroupSize);
+  const chunkEnd = Math.floor(endBound/terrainGroupSize)
+  if (chunkStart == chunkEnd) {
+    return terrain[chunkStart].slice(startBound%terrainGroupSize, endBound%terrainGroupSize+1);
+  } else {
+    terrain[chunkEnd];
+    return [
+      ...terrain[chunkStart].slice(startBound%terrainGroupSize),
+      ...[].concat(...terrain.slice(chunkStart+1, chunkEnd)),
+      ...terrain[chunkEnd].slice(0, endBound%terrainGroupSize+1)
+    ];
+  }
 }
 
 
@@ -695,6 +715,10 @@ async function main() {
 
   // Creates a lazy list of terrain elements
   const terrain = generateTerrain();
+
+  planePos.x = (terrain[0][0].left.x+terrain[0][0].right.x)/2;
+  planePos.y = -200;
+  setPlanePosition(planePos.x, planePos.y, 0);
 
   let highestTerrainElement = -1;
   let groupNum = -1;
@@ -945,6 +969,31 @@ async function main() {
 
     // Move plane sprite
     setPlanePosition(planePos.x, planePos.y, deg(planePos.angle));
+
+    // Collision Detection
+    let above, below;
+    getTerrainForYRange(terrain, planePos.y+scale(0.09), planePos.y-scale(0.09)).forEach(chunk=>{
+      if (scale(1-chunk.left.y) >= planePos.y)
+        if (!above || chunk.left.y < above.left.y)
+          above = chunk;
+      if (scale(1-chunk.left.y) <= planePos.y)
+        if (!below || chunk.left.y > below.left.y)
+          below = chunk;
+    });
+    if (above && below && (planePos.x < scale(above.left.x + below.left.x) / 2 ||
+                           planePos.x > scale(above.right.x + below.right.x) / 2)) {
+      break;
+    }
+
+    // This would work better, but it seems hard
+    // (function(){
+    //   const planeBox = $('#plane').getBBox();
+    //   const transform = {
+    //     sin: Math.sin(planePos.angle),
+    //     cos: Math.cos(planePos.angle)
+    //   };
+      
+    // })()
 
     // Render the terrain chunk at a time
     if (unscale(3*height-planePos.y) > highestTerrainElement) {
