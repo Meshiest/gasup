@@ -558,7 +558,7 @@ function generateTerrain() {
       yield {
         x: lastPoint=gauss(lastPoint, 0.15),
         y,
-        width: fuzz(0.8, 0.2)
+        width: fuzz(0.9, 0.2)
       };
   });
 
@@ -574,9 +574,11 @@ function generateTerrain() {
 
       const nPoints = 10;
 
-      for (let i = 0; i < nPoints; ++i) {
-        const y = points[0].y + (i/nPoints)*(points[1].y-points[0].y);
+      for (let j = 0; j < nPoints; ++j) {
+        const y = points[0].y + (j/nPoints)*(points[1].y-points[0].y);
         const guns = () => {
+          if (i < 10)
+            return;
           let r = Math.random();
           return r < 0.02 ? {rocket: true} : r < 0.04 ? {gatling: true} : {};
         };
@@ -587,8 +589,8 @@ function generateTerrain() {
         });
         yield {
           gas: Math.random() < 0.007,
-          left: {x: leftSpline(i/nPoints), ...common(180)},
-          right: {x: rightSpline(i/nPoints), ...common(0)}
+          left: {x: leftSpline(j/nPoints), ...common(180)},
+          right: {x: rightSpline(j/nPoints), ...common(0)}
         }
       }
     }
@@ -892,7 +894,7 @@ async function main() {
         fill: gray(50),
       });
 
-      const innerDist = 0.15;
+      const innerDist = 0.10;
       const innerPoly = svg('polygon', {
         points: [
           ...(groupNum > 0 ? [makeVertex(addProps(terrain[groupNum-1][terrainGroupSize-1].left, {x: innerDist}))] : []),
