@@ -1022,7 +1022,32 @@ async function main() {
       $('#bg').appendChild(lowerPoly);
       $('#bg').appendChild(innerPoly);
       $('#fg').appendChild(innerGroup);
+      if(groupNum == 0) {
+        const end = terrain[0][0].right.x - 0.1;
+        const y = terrain[0][0].left.y;
+        let base = [];
+        let back = [];
+        for(let x = terrain[0][0].left.x + 0.1; x < end;) {
+          let size = fuzz(0.1, 0.02);
+          x += size / 2;
+          base.push(square({
+            x, y, size,
+            rot: fuzz(135, 15),
+          }, 50));
+          back.push(square({
+            x: x * 1.1, y: y - 0.1, size: size * 1.1,
+            rot: fuzz(135, 15),
+          }, 85));
+        }
+        while(base.length) {
+          $('#fg').appendChild(base.splice(Math.floor(Math.random() * base.length), 1)[0]);
+        }
+        while(back.length) {
+          $('#fg').appendChild(back.splice(Math.floor(Math.random() * back.length), 1)[0]);
+        }
+      }
       $('#fg').appendChild(upperGroup);
+
       highestTerrainElement = terrain[groupNum][terrainGroupSize-1].left.y;
     }
 
