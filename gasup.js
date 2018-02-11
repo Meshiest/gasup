@@ -576,6 +576,7 @@ async function main() {
     keyboard[e.code] = false;
   }, false);
 
+  setPlanePosition(-200, -200, 0);
 
   // Touch event handling
   const touch = {down: false, pos: {x: 0, y: 0}};
@@ -897,5 +898,6 @@ async function main() {
 }
 
 window.addEventListener('load', () => {
+  $('.loading-screen').style.display = 'none';
   main();
 });
