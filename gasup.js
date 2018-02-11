@@ -1167,3 +1167,8 @@ window.addEventListener('load', () => {
   $('.loading-screen').style.display = 'none';
   $('#canvas').style.display='inherit';
 });
+
+document.body.addEventListener('DOMContentLoaded', () => {
+  $('.loading-screen').style.display = 'none';
+  $('#canvas').style.display='inherit';
+});
