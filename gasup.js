@@ -716,7 +716,15 @@ async function main() {
   // Creates a lazy list of terrain elements
   const terrain = generateTerrain();
 
-  planePos.x = (terrain[0][0].left.x+terrain[0][0].right.x)/2;
+  const initialTerrain =
+        getTerrainForYRange(terrain, -200+scale(0.09), -200-scale(0.09));
+  console.log(initialTerrain);
+  const initUnscaledPos = (
+    initialTerrain.map(x=>x.left.x).reduce((x,y)=>x+y) +
+      initialTerrain.map(x=>x.right.x).reduce((x,y)=>x+y)
+  )/2/initialTerrain.length;
+  console.log(initUnscaledPos);
+  planePos.x = scale(initUnscaledPos);
   planePos.y = -200;
   setPlanePosition(planePos.x, planePos.y, 0);
 
