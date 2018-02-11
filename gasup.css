@@ -40,7 +40,7 @@ body {
     right: 0;
 }
 
-.hud-title {
+.hud-menu {
     height: 100vh;
     left: 0;
     top: 0;
@@ -52,13 +52,52 @@ body {
     flex:  1;
 }
 
-.loading-screen {
+.loading-screen, .menu {
     align-items: center;
-    background-color: #000;
+    display: flex;
+    justify-content: center;
+}
+
+.menu {
+    background-color: rgba(0, 0, 0, 0.6);
+    flex-direction: column;
+}
+
+.menu h3 {
+    color: #fff;
+    font-size: 50;
+    margin: 0 0;
+}
+
+.menu section {
+    align-items: center;
     color: #fff;
     display: flex;
+    flex-direction: column;
+    font-size: 20;
+    margin: 10px 0 20px;
+}
+
+.menu i {
+    color: #ccf;
+}
+
+.menu .numeric {
+    color: #ffa;
+}
+
+.menu button {
+    background: transparent;
+    border: 2px solid white;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.loading-screen {
+    background-color: #000;
+    color: #fff;
     font-size: 50;
-    justify-content: center;
 }
 
 .load-text {

@@ -681,11 +681,17 @@ function emptyElem(el) {
 let titleSequence = 2;
 
 async function main() {
+  $('#gameover-screen').style.display = 'none';
+
   emptyElem($('#elems'));
   emptyElem($('#fg'));
   emptyElem($('#bg'));
+  gameObjects.splice(0, gameObjects.length);
+  particles.splice(0, particles.length);
+
   setPlanePosition(-200, -200, 0);
   planePos = {angle: Math.PI/2, x: 0, y: 0, vx: 0, vy: -200};
+  let gameMaxAlt = 0;
 
   // Creates a lazy list of terrain elements
   const terrain = generateTerrain();
@@ -1056,6 +1062,10 @@ async function main() {
       altGlow = 1;
     }
 
+    if(gameMaxAlt < Math.floor(-planePos.y/250)) {
+      gameMaxAlt = Math.floor(-planePos.y/250);
+    }
+
     // Update altitude indicator appearance
     svgProps($('#alt-text'), {
       opacity: altGlow * 0.6 + 0.4,
@@ -1063,6 +1073,10 @@ async function main() {
       y: 80 + altGlow * 2.5,
     });
   }
+
+  $('#currAlt').textContent = Math.floor(-planePos.y/250);
+  $('#maxAlt').textContent = gameMaxAlt;
+  $('#gameover-screen').style.display = 'flex';
 }
 
 window.addEventListener('load', () => {
