@@ -267,7 +267,7 @@ function createAntiAirRocket(x, y, angle) {
       let playerDist = Math.hypot(y - planePos.y, x - planePos.x);
       let playerTheta = Math.atan2(y - planePos.y, x - planePos.x);
 
-      if(playerDist < 250) {
+      if(playerDist < 400) {
         dist -= deltaTime * 2;
         angle = Math.atan2(
           Math.sin(angle) - Math.sin(playerTheta) * deltaTime * 2,
@@ -309,7 +309,7 @@ function createAntiAirRocket(x, y, angle) {
       if(dist > 40 || playerDist < 50) {
         if(playerDist < 400) {
           screenRumble = 0.4;
-          gasAmount -= clamp(1 - playerDist / 400, 0.2, 0.005);
+          gasAmount -= clamp((1 - playerDist / 400) * 0.2, 0.2, 0.005);
         }
         particle(
           x,
@@ -477,8 +477,8 @@ const MAX_SPEED = 500;
 const THROTTLE_SPEED = 25;
 
 // Range in which a gatling turret can see a player
-const GAT_TURRET_RANGE = 500;
-const ANTIAIR_TURRET_RANGE = 500;
+const GAT_TURRET_RANGE = 600;
+const ANTIAIR_TURRET_RANGE = 900;
 
 // Plane transform
 let planePos = {angle: Math.PI/2, x: 0, y: 0, vx: 0, vy: -200};
@@ -611,7 +611,7 @@ function generateTerrain() {
           size: gauss(0.07, 0.02),
         });
         yield {
-          gas: Math.random() < 0.007,
+          gas: Math.random() < 0.01,
           left: {x: leftSpline(j/nPoints), ...common(180)},
           right: {x: rightSpline(j/nPoints), ...common(0)}
         }
