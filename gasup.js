@@ -1165,4 +1165,5 @@ async function main() {
 
 window.addEventListener('load', () => {
   $('.loading-screen').style.display = 'none';
+  $('#canvas').style.display='inherit';
 });
