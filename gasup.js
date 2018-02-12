@@ -121,12 +121,22 @@ function rect(x, y, width, height, rot, color, glow) {
   return svg('rect', {
     x, y, width, height,
     transform: `rotate(${rot},${x+width/2},${y+height/2})`,
-    fill: gray(color),
+    fill: typeof color === 'number' ? gray(color) : color,
     ...(glow ? {
       stroke: gray(Math.min(color+20, 255)),
       'stroke-width': 5,
       'stroke-dasharray': `0 ${width + height} ${width + height}`
     } : {})
+  });
+}
+
+// Generates an SVG arc
+function arc(start, end, diameter, color, thickness) {
+  return svg('path', {
+    d: `M${start.x} ${start.y} A ${diameter} ${diameter} 1 0 0 ${end.x} ${end.y}`,
+    stroke: color,
+    fill: 'none',
+    'stroke-width': thickness,
   });
 }
 
@@ -611,6 +621,7 @@ function generateTerrain() {
         });
         yield {
           gas: Math.random() < 0.013,
+          vine: Math.random() < 0.05,
           left: {x: leftSpline(j/nPoints), ...common(180)},
           right: {x: rightSpline(j/nPoints), ...common(0)}
         }
@@ -1037,6 +1048,41 @@ async function main() {
         return rect(scale(x-size/2), scale(1-y-size/2),
                     screenSize, screenSize, rot, color, true);
       };
+
+      const makeVine = (start, end) => {
+        const s = scale(1);
+        const topThick = fuzz(10, 2);
+        const diameter = s * Math.hypot(start.y-end.y, start.x-end.x) * fuzz(1.2, 0.1);
+        const topVine = arc(
+          {x: s * (start.x), y: scale(1-start.y)},
+          {x: s * (end.x), y: scale(1-end.y)},
+          diameter,
+          lerpColor('#226622', '#004400', Math.random()), topThick);
+        let leaves = [];
+        for(let d = 0.2; d < 0.8; d += fuzz(0.1, 0.07)) {
+          let { x, y } = topVine.getPointAtLength(d * s * topVine.getTotalLength());
+          let leavesAngle = fuzz(90, 5);
+          const vineLen = Math.floor(fuzz(6, 4));
+          const startColor = lerpColor('#226622', '#004400', Math.random());
+          const endColor = lerpColor('#55aa55', '#338833', Math.random());
+          for(let i = 0; i < vineLen; i++) {
+            leaves.push(rect(x, y, 20, 20, leavesAngle + 45, lerpColor(endColor, startColor, i/vineLen)));
+            leavesAngle = leavesAngle * 0.8 + 90 * 0.2;
+            x += Math.cos(leavesAngle * Math.PI / 180) * 20;
+            y += Math.sin(leavesAngle * Math.PI / 180) * 20;
+            leavesAngle += Math.sin(leavesAngle + i ) * 20;
+          }
+        }
+        return svg('g', {},
+          topVine,
+          arc(
+            {x: s * (start.x), y: scale(1-start.y) - topThick/2},
+            {x: s * (end.x), y: scale(1-end.y) - topThick/2},
+            diameter,
+            lerpColor('#55aa55', '#338833', Math.random()), 2),
+          ...leaves
+        );
+      };
       
       const upperGroup = svg('g', {}, ...[].concat(...terrain[groupNum].map(
         ({left, right}) => [square(left, 85), square(right, 85)]
@@ -1081,6 +1127,13 @@ async function main() {
       $('#bg').appendChild(lowerPoly);
       $('#bg').appendChild(innerPoly);
       $('#fg').appendChild(innerGroup);
+
+      terrain[groupNum].map(({left, right, vine}) => {
+        if(vine) {
+          $('#fg').appendChild(makeVine(left, right));
+        }
+      });
+
       if(groupNum == 0) {
         const end = terrain[0][0].right.x - 0.1;
         const y = terrain[0][0].left.y;
